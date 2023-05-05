@@ -6,33 +6,17 @@
 using namespace std;
 typedef vector<double> Point;
 
-class Cluster
-{
-private:
-    int clusterId;
-    Point centroid;
-    vector<Point> points;
-
-public:
-    Cluster(int clusterId, Point centroid);
-    void add_point(Point p);
-    bool remove_point(Point p);
-    void remove_all_points();
-    int get_id();
-    int get_size();
-    Point get_centroid();
-};
-
-
 class KMeans
 {
 private:
     int k, iters, dimensions;
-    vector<Cluster> clusters;
+    vector<int> clusters;
+    vector<Point> points;
 
 public:
-    KMeans();
-
+    KMeans(int init_k, int init_iters, int init_dim, vector<Point> init_points);
+    void fit();
+    vector<int> clusters_ids();
 };
 
 #endif

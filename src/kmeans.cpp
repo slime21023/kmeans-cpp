@@ -53,5 +53,58 @@ KMeans::KMeans(int init_k, int init_iters, int init_dim, vector<Point> init_poin
     k = init_k;
     iters = init_iters;
     dimensions = init_dim;
-    points = init_points;
+    Point empty = Point(init_k, 0);
+    points = vector<Point>(init_points.size(), empty);
+
+    for (int i = 0; i < init_points.size(); i++)
+    {
+        for (int j = 0; j < k; j++)
+        {
+            points[i][j] = init_points[i][j];
+        }
+    }
 };
+
+
+void KMeans::fit()
+{
+    vector<Point> centroids(k, vector<double>(dimensions));
+
+    for(int i = 0; i < k; i++)
+    {
+        int index = (i + rand()) % points.size();
+        centroids[i] = points[index];
+    }
+
+    vector<int> assignments(points.size());
+    for(int it = 0; it < iters; it++)
+    {
+        for(int i = 0; i < points.size(); i++)
+        {
+            assignments[i] = closest_centroid(centroids, points[i]);
+        }
+
+        vector<Point> new_centroids = update_centroids(points, assignments, k);
+
+        bool converged = true;
+        for(int i = 0; i < k; i++)
+        {
+            if (euclidean_distance(new_centroids[i], centroids[i]) > 1e-6) {
+                converged = false;
+                break;
+            }
+        }
+
+        if (converged) {
+            break;
+        }
+
+        centroids = new_centroids;
+    }
+    clusters = assignments;
+}
+
+vector<int> KMeans::clusters_ids()
+{
+    return clusters;
+}
